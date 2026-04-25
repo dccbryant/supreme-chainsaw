@@ -48,7 +48,6 @@ MUTED = "#6f6b63"
 ACCENT = "#bf3c30"
 ACCENT_SOFT = "#d4a792"
 CLASSICAL = "#2f7d52"
-TYPE_SIZE = 12
 
 
 # ------------------------
@@ -134,19 +133,13 @@ class CardLabel(QLabel):
                 painter.drawPixmap(2, 2, self.queen_face)
             else:
                 painter.setPen(QColor(INK))
-                f = QFont()
-                f.setPointSize(TYPE_SIZE)
-                f.setWeight(QFont.Weight.DemiBold)
-                painter.setFont(f)
+                painter.setFont(QFont("Helvetica", 20, QFont.Weight.DemiBold))
                 painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, "Q♥")
             return
 
         if self.show_name:
             painter.setPen(QColor(INK))
-            f = QFont()
-            f.setPointSize(TYPE_SIZE)
-            f.setWeight(QFont.Weight.Medium)
-            painter.setFont(f)
+            painter.setFont(QFont("Helvetica", 15, QFont.Weight.Medium))
             painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, self.name)
         elif self.back_image and not self.back_image.isNull():
             painter.drawPixmap(2, 2, self.back_image)
@@ -202,9 +195,8 @@ class CellLabel(QLabel):
 
         if self.show_name:
             painter.setPen(QColor(INK))
-            f = QFont()
-            f.setPointSize(TYPE_SIZE)
-            painter.setFont(f)
+            fs = max(7, min(11, int(self.size_px * 0.38)))
+            painter.setFont(QFont("Helvetica", fs))
             painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, str(self.index))
 
         if self.highlight_classical:
@@ -330,7 +322,8 @@ class GroverGame(QWidget):
             QWidget {{
                 background: {BG};
                 color: {INK};
-                font-size: {TYPE_SIZE}px;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 12px;
             }}
             QFrame#LeftPanel {{
                 background: {PANEL};
@@ -339,11 +332,13 @@ class GroverGame(QWidget):
             QFrame#StatCard {{
                 background: {PANEL_DARK};
                 border: 1px solid #c8c1b6;
+                border-radius: 2px;
                 padding: 8px;
             }}
             QPushButton {{
                 background: transparent;
                 border: 1px solid #b6b0a5;
+                border-radius: 2px;
                 padding: 8px 12px;
                 min-height: 18px;
             }}
@@ -353,6 +348,7 @@ class GroverGame(QWidget):
             QComboBox {{
                 background: {BG};
                 border: 1px solid #b6b0a5;
+                border-radius: 2px;
                 padding: 5px 8px;
                 min-width: 110px;
             }}
@@ -381,15 +377,15 @@ class GroverGame(QWidget):
         left_panel = QVBoxLayout()
         left_panel.setAlignment(Qt.AlignmentFlag.AlignTop)
         left_panel.setContentsMargins(24, 28, 24, 24)
-        left_panel.setSpacing(10)
+        left_panel.setSpacing(12)
 
         self.kicker = QLabel("GROVER / CLASSICAL")
-        self.kicker.setStyleSheet(f"color: {MUTED};")
+        self.kicker.setStyleSheet(f"font-size: 10px; letter-spacing: 1px; color: {MUTED};")
         left_panel.addWidget(self.kicker)
 
         self.title = QLabel("Searching for a hidden target")
         self.title.setWordWrap(True)
-        self.title.setStyleSheet("font-weight: 500;")
+        self.title.setStyleSheet("font-size: 24px; font-weight: 500;")
         left_panel.addWidget(self.title)
 
         left_panel.addWidget(
@@ -411,7 +407,7 @@ class GroverGame(QWidget):
 
         speed_row = QVBoxLayout()
         self.speed_label = QLabel("Classical speed: Brisk")
-        self.speed_label.setStyleSheet(f"color: {MUTED};")
+        self.speed_label.setStyleSheet(f"font-size: 11px; color: {MUTED};")
         self.speed_slider = QSlider(Qt.Orientation.Horizontal)
         self.speed_slider.setMinimum(1)
         self.speed_slider.setMaximum(5)
@@ -424,7 +420,7 @@ class GroverGame(QWidget):
         self.message = QLabel("Click → to begin")
         self.message.setWordWrap(True)
         self.message.setStyleSheet(
-            f"padding: 8px; background: {PANEL_DARK}; border: 1px solid #c8c1b6;"
+            f"font-size: 13px; line-height: 1.2; padding: 8px; background: {PANEL_DARK}; border: 1px solid #c8c1b6;"
         )
         left_panel.addWidget(self.message)
 
@@ -444,13 +440,13 @@ class GroverGame(QWidget):
         self.attempts_label.setFixedSize(80, 80)
         self.attempts_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.attempts_label.setStyleSheet(
-            f"background: {INK}; color: {BG}; font-size: {TYPE_SIZE}px; font-weight: 500;"
+            f"background: {INK}; color: {BG}; font-size: 26px; font-weight: 500;"
         )
 
         self.next_button = QPushButton("→")
         self.next_button.setFixedSize(80, 80)
         self.next_button.setStyleSheet(
-            f"background: {INK}; color: {BG}; font-size: {TYPE_SIZE}px; border: none;"
+            f"background: {INK}; color: {BG}; font-size: 28px; border: none;"
         )
         self.next_button.clicked.connect(self._next_turn)
 
@@ -480,17 +476,17 @@ class GroverGame(QWidget):
         block.setSpacing(2)
 
         name = QLabel(title)
-        name.setStyleSheet("font-weight: 500;")
+        name.setStyleSheet("font-size: 13px; font-weight: 500;")
         block.addWidget(name)
 
         tone = ACCENT_SOFT if status == "Online" else "#b57f7f"
         online = QLabel(f"● {status}")
-        online.setStyleSheet(f"color: {tone};")
+        online.setStyleSheet(f"font-size: 11px; color: {tone};")
         block.addWidget(online)
 
         if description:
             desc = QLabel(description)
-            desc.setStyleSheet(f"color: {MUTED};")
+            desc.setStyleSheet(f"font-size: 10px; color: {MUTED};")
             desc.setWordWrap(True)
             block.addWidget(desc)
 
