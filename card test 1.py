@@ -417,6 +417,7 @@ class GroverGame(QWidget):
             self.qubit_combo.addItem(f"{q} qubits", q)
         self.qubit_combo.setCurrentIndex(0)
         self.apply_qubits_btn = QPushButton("Apply")
+        self.apply_qubits_btn.setObjectName("BlueControl")
         self.apply_qubits_btn.clicked.connect(self._apply_qubits)
         sel_row.addWidget(QLabel("Qubits"))
         sel_row.addWidget(self.qubit_combo)
@@ -436,6 +437,7 @@ class GroverGame(QWidget):
         left_panel.addLayout(speed_row)
 
         self.message = QLabel("Click → to begin")
+        self.message.setObjectName("BlueBadge")
         self.message.setWordWrap(True)
         self.message.setStyleSheet(
             f"padding: 8px; background: {PANEL_DARK}; border: 1px solid #c8c1b6;"
@@ -444,11 +446,13 @@ class GroverGame(QWidget):
 
         button_row = QHBoxLayout()
         self.reveal_button = QPushButton("Reveal All")
+        self.reveal_button.setObjectName("BlueControl")
         self.reveal_button.setCheckable(True)
         self.reveal_button.clicked.connect(self._toggle_reveal)
         button_row.addWidget(self.reveal_button)
 
         self.restart_button = QPushButton("Restart")
+        self.restart_button.setObjectName("BlueControl")
         self.restart_button.clicked.connect(self._restart_game)
         button_row.addWidget(self.restart_button)
         left_panel.addLayout(button_row)
@@ -552,12 +556,12 @@ class GroverGame(QWidget):
             random.shuffle(self.deck)
             self.queen_index = self.deck.index(QUEEN_CARD)
             self.queen_bin = format(self.queen_index, f"0{self.num_qubits}b")
-            self.title.setText("Searching Queen of Hearts (52 cards)")
+            self.title.setText("Searching Queen of Hearts\n(52 cards)")
         else:
             self.deck = None
             self.queen_index = random.randrange(self.n_items)
             self.queen_bin = format(self.queen_index, f"0{self.num_qubits}b")
-            self.title.setText(f"Searching target state among {self.n_items} states")
+            self.title.setText(f"Searching target state\n({self.n_items} cards)")
 
         self.oracle = custom_oracle(self.num_qubits, self.queen_bin)
         self.diff = diffuser(self.num_qubits)
