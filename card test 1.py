@@ -48,6 +48,10 @@ MUTED = "#6f6b63"
 ACCENT = "#bf3c30"
 ACCENT_SOFT = "#d4a792"
 CLASSICAL = "#2f7d52"
+TYPE_SIZE_BODY = 12
+TYPE_SIZE_DISPLAY = 20
+WEIGHT_REGULAR = 400
+WEIGHT_SEMIBOLD = 600
 
 
 # ------------------------
@@ -133,13 +137,21 @@ class CardLabel(QLabel):
                 painter.drawPixmap(2, 2, self.queen_face)
             else:
                 painter.setPen(QColor(INK))
-                painter.setFont(QFont("Helvetica", 20, QFont.Weight.DemiBold))
+                f = QFont()
+                f.setFamily("IBM Plex Sans")
+                f.setPointSize(TYPE_SIZE_BODY)
+                f.setWeight(WEIGHT_SEMIBOLD)
+                painter.setFont(f)
                 painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, "Q♥")
             return
 
         if self.show_name:
             painter.setPen(QColor(INK))
-            painter.setFont(QFont("Helvetica", 15, QFont.Weight.Medium))
+            f = QFont()
+            f.setFamily("IBM Plex Sans")
+            f.setPointSize(TYPE_SIZE_BODY)
+            f.setWeight(WEIGHT_REGULAR)
+            painter.setFont(f)
             painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, self.name)
         elif self.back_image and not self.back_image.isNull():
             painter.drawPixmap(2, 2, self.back_image)
@@ -195,8 +207,11 @@ class CellLabel(QLabel):
 
         if self.show_name:
             painter.setPen(QColor(INK))
-            fs = max(7, min(11, int(self.size_px * 0.38)))
-            painter.setFont(QFont("Helvetica", fs))
+            f = QFont()
+            f.setFamily("IBM Plex Sans")
+            f.setPointSize(TYPE_SIZE_BODY)
+            f.setWeight(WEIGHT_REGULAR)
+            painter.setFont(f)
             painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, str(self.index))
 
         if self.highlight_classical:
@@ -322,8 +337,9 @@ class GroverGame(QWidget):
             QWidget {{
                 background: {BG};
                 color: {INK};
-                font-family: Helvetica, Arial, sans-serif;
-                font-size: 12px;
+                font-family: "IBM Plex Sans";
+                font-size: {TYPE_SIZE_BODY}px;
+                font-weight: {WEIGHT_REGULAR};
             }}
             QFrame#LeftPanel {{
                 background: {PANEL};
@@ -332,14 +348,12 @@ class GroverGame(QWidget):
             QFrame#StatCard {{
                 background: {PANEL_DARK};
                 border: 1px solid #c8c1b6;
-                border-radius: 2px;
                 padding: 8px;
             }}
             QPushButton {{
                 background: transparent;
                 border: 1px solid #b6b0a5;
-                border-radius: 2px;
-                padding: 8px 12px;
+                padding: 8px 10px;
                 min-height: 18px;
             }}
             QPushButton:hover {{ background: #e7e2d9; }}
@@ -348,11 +362,19 @@ class GroverGame(QWidget):
             QComboBox {{
                 background: {BG};
                 border: 1px solid #b6b0a5;
-                border-radius: 2px;
                 padding: 5px 8px;
                 min-width: 110px;
             }}
             QScrollArea {{ border: none; }}
+            QLabel#Title {{
+                font-size: {TYPE_SIZE_DISPLAY}px;
+                font-weight: {WEIGHT_SEMIBOLD};
+                color: {INK};
+            }}
+            QLabel#SectionTitle {{
+                font-weight: {WEIGHT_SEMIBOLD};
+                color: {INK};
+            }}
             QSlider::groove:horizontal {{
                 border: none;
                 height: 2px;
@@ -376,22 +398,18 @@ class GroverGame(QWidget):
 
         left_panel = QVBoxLayout()
         left_panel.setAlignment(Qt.AlignmentFlag.AlignTop)
-        left_panel.setContentsMargins(24, 28, 24, 24)
-        left_panel.setSpacing(12)
-
-        self.kicker = QLabel("GROVER / CLASSICAL")
-        self.kicker.setStyleSheet(f"font-size: 10px; letter-spacing: 1px; color: {MUTED};")
-        left_panel.addWidget(self.kicker)
+        left_panel.setContentsMargins(28, 32, 28, 28)
+        left_panel.setSpacing(14)
 
         self.title = QLabel("Searching for a hidden target")
+        self.title.setObjectName("Title")
         self.title.setWordWrap(True)
-        self.title.setStyleSheet("font-size: 24px; font-weight: 500;")
         left_panel.addWidget(self.title)
 
         left_panel.addWidget(
-            self._status_block("IBM Quantum System Two", "Online", "HERON / 133 QUBITS / TUNABLE COUPLER")
+            self._status_block("Quantum Engine", "Online", "6–14 qubit simulator")
         )
-        left_panel.addWidget(self._status_block("Classical Computer", "Online", "Linear scan baseline"))
+        left_panel.addWidget(self._status_block("Classical Engine", "Online", "Linear scan baseline"))
 
         sel_row = QHBoxLayout()
         self.qubit_combo = QComboBox()
@@ -407,7 +425,7 @@ class GroverGame(QWidget):
 
         speed_row = QVBoxLayout()
         self.speed_label = QLabel("Classical speed: Brisk")
-        self.speed_label.setStyleSheet(f"font-size: 11px; color: {MUTED};")
+        self.speed_label.setStyleSheet(f"color: {MUTED};")
         self.speed_slider = QSlider(Qt.Orientation.Horizontal)
         self.speed_slider.setMinimum(1)
         self.speed_slider.setMaximum(5)
@@ -420,7 +438,7 @@ class GroverGame(QWidget):
         self.message = QLabel("Click → to begin")
         self.message.setWordWrap(True)
         self.message.setStyleSheet(
-            f"font-size: 13px; line-height: 1.2; padding: 8px; background: {PANEL_DARK}; border: 1px solid #c8c1b6;"
+            f"padding: 8px; background: {PANEL_DARK}; border: 1px solid #c8c1b6;"
         )
         left_panel.addWidget(self.message)
 
@@ -440,13 +458,13 @@ class GroverGame(QWidget):
         self.attempts_label.setFixedSize(80, 80)
         self.attempts_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.attempts_label.setStyleSheet(
-            f"background: {INK}; color: {BG}; font-size: 26px; font-weight: 500;"
+            f"background: {INK}; color: {BG}; font-size: {TYPE_SIZE_DISPLAY}px; font-weight: {WEIGHT_SEMIBOLD};"
         )
 
         self.next_button = QPushButton("→")
         self.next_button.setFixedSize(80, 80)
         self.next_button.setStyleSheet(
-            f"background: {INK}; color: {BG}; font-size: 28px; border: none;"
+            f"background: {INK}; color: {BG}; font-size: {TYPE_SIZE_DISPLAY}px; font-weight: {WEIGHT_SEMIBOLD}; border: none;"
         )
         self.next_button.clicked.connect(self._next_turn)
 
@@ -476,17 +494,17 @@ class GroverGame(QWidget):
         block.setSpacing(2)
 
         name = QLabel(title)
-        name.setStyleSheet("font-size: 13px; font-weight: 500;")
+        name.setObjectName("SectionTitle")
         block.addWidget(name)
 
         tone = ACCENT_SOFT if status == "Online" else "#b57f7f"
         online = QLabel(f"● {status}")
-        online.setStyleSheet(f"font-size: 11px; color: {tone};")
+        online.setStyleSheet(f"color: {tone};")
         block.addWidget(online)
 
         if description:
             desc = QLabel(description)
-            desc.setStyleSheet(f"font-size: 10px; color: {MUTED};")
+            desc.setStyleSheet(f"color: {MUTED};")
             desc.setWordWrap(True)
             block.addWidget(desc)
 
