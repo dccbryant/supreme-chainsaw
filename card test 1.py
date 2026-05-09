@@ -48,8 +48,6 @@ MUTED = "#6f6b63"
 ACCENT = "#bf3c30"
 ACCENT_SOFT = "#d4a792"
 CLASSICAL = "#2f7d52"
-BLUE = "#2f6df6"
-BLUE_DARK = "#2558c6"
 TYPE_SIZE_BODY = 12
 TYPE_SIZE_DISPLAY = 20
 WEIGHT_REGULAR = 400
@@ -344,11 +342,11 @@ class GroverGame(QWidget):
                 font-weight: {WEIGHT_REGULAR};
             }}
             QFrame#LeftPanel {{
-                background: {BG};
+                background: {PANEL};
                 border-right: 1px solid #c6bfb4;
             }}
             QFrame#StatCard {{
-                background: {BG};
+                background: {PANEL_DARK};
                 border: 1px solid #c8c1b6;
                 padding: 8px;
             }}
@@ -361,14 +359,6 @@ class GroverGame(QWidget):
             QPushButton:hover {{ background: #e7e2d9; }}
             QPushButton:pressed {{ background: #dcd5ca; }}
             QPushButton:disabled {{ color: #9a9489; border-color: #c9c3b8; }}
-            QPushButton#BlueControl {{
-                background: {BLUE};
-                color: white;
-                border: 1px solid {BLUE_DARK};
-                font-weight: {WEIGHT_SEMIBOLD};
-            }}
-            QPushButton#BlueControl:hover {{ background: {BLUE_DARK}; }}
-            QPushButton#BlueControl:pressed {{ background: #1f49a5; }}
             QComboBox {{
                 background: {BG};
                 border: 1px solid #b6b0a5;
@@ -380,13 +370,6 @@ class GroverGame(QWidget):
                 font-size: {TYPE_SIZE_DISPLAY}px;
                 font-weight: {WEIGHT_SEMIBOLD};
                 color: {INK};
-            }}
-            QLabel#BlueBadge {{
-                background: {BLUE};
-                color: white;
-                border: 1px solid {BLUE_DARK};
-                padding: 8px;
-                font-weight: {WEIGHT_SEMIBOLD};
             }}
             QLabel#SectionTitle {{
                 font-weight: {WEIGHT_SEMIBOLD};
@@ -443,7 +426,7 @@ class GroverGame(QWidget):
 
         speed_row = QVBoxLayout()
         self.speed_label = QLabel("Classical speed: Brisk")
-        self.speed_label.setObjectName("BlueBadge")
+        self.speed_label.setStyleSheet(f"color: {MUTED};")
         self.speed_slider = QSlider(Qt.Orientation.Horizontal)
         self.speed_slider.setMinimum(1)
         self.speed_slider.setMaximum(5)
@@ -456,6 +439,9 @@ class GroverGame(QWidget):
         self.message = QLabel("Click → to begin")
         self.message.setObjectName("BlueBadge")
         self.message.setWordWrap(True)
+        self.message.setStyleSheet(
+            f"padding: 8px; background: {PANEL_DARK}; border: 1px solid #c8c1b6;"
+        )
         left_panel.addWidget(self.message)
 
         button_row = QHBoxLayout()
