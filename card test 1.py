@@ -475,6 +475,10 @@ class GroverGame(QWidget):
         control.addWidget(self.attempts_label)
         control.addWidget(self.next_button)
         left_panel.addLayout(control)
+        left_panel.addSpacerItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
+        legend = QLabel("UNSCANNED    CLASSICAL VISITED    QUANTUM PROBE    MARKED · TARGET")
+        legend.setObjectName("Micro")
+        left_panel.addWidget(legend)
 
         left_frame = QFrame()
         left_frame.setObjectName("LeftPanel")
@@ -489,9 +493,20 @@ class GroverGame(QWidget):
         self.grid_layout.setSpacing(self._grid_spacing)
         self.grid_host.setLayout(self.grid_layout)
         self.scroll.setWidget(self.grid_host)
-        root.addWidget(self.scroll)
+        content_layout.addWidget(self.scroll)
 
         self.heatmap = HeatmapCanvas()
+        root.addWidget(content_frame)
+
+        bottom_bar = QFrame()
+        bottom_bar.setObjectName("BottomBar")
+        bottom_layout = QHBoxLayout(bottom_bar)
+        bottom_layout.setContentsMargins(16, 8, 16, 8)
+        bottom_layout.setSpacing(8)
+        bottom_layout.addWidget(QLabel("GROVER · Q-52 · FIRMWARE 1.04 · SIMULATION MODE"))
+        bottom_layout.addStretch(1)
+        bottom_layout.addWidget(QLabel("OUTPUT · LOG → /var/qlog/0427.log"))
+        root.addWidget(bottom_bar)
 
     def _status_block(self, title, status, description=None):
         block = QVBoxLayout()
