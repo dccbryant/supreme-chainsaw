@@ -15,8 +15,6 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QScrollArea,
     QSlider,
-    QSpacerItem,
-    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -50,9 +48,6 @@ MUTED = "#6f6b63"
 ACCENT = "#bf3c30"
 ACCENT_SOFT = "#d4a792"
 CLASSICAL = "#2f7d52"
-BLUE = "#2f6df6"
-BLUE_DARK = "#2558c6"
-LINE = "#bfb49a"
 TYPE_SIZE_BODY = 12
 TYPE_SIZE_DISPLAY = 20
 WEIGHT_REGULAR = 400
@@ -347,22 +342,13 @@ class GroverGame(QWidget):
                 font-weight: {WEIGHT_REGULAR};
             }}
             QFrame#LeftPanel {{
-                background: {BG};
-                border-right: 1px solid {LINE};
+                background: {PANEL};
+                border-right: 1px solid #c6bfb4;
             }}
             QFrame#StatCard {{
-                background: {BG};
-                border: 1px solid {LINE};
+                background: {PANEL_DARK};
+                border: 1px solid #c8c1b6;
                 padding: 8px;
-            }}
-            QFrame#TopBar, QFrame#BottomBar {{
-                background: {BG};
-                border: 1px solid {LINE};
-            }}
-            QFrame#ContentFrame {{
-                background: {BG};
-                border-left: 1px solid {LINE};
-                border-right: 1px solid {LINE};
             }}
             QPushButton {{
                 background: transparent;
@@ -373,14 +359,6 @@ class GroverGame(QWidget):
             QPushButton:hover {{ background: #e7e2d9; }}
             QPushButton:pressed {{ background: #dcd5ca; }}
             QPushButton:disabled {{ color: #9a9489; border-color: #c9c3b8; }}
-            QPushButton#BlueControl {{
-                background: {BLUE};
-                color: white;
-                border: 1px solid {BLUE_DARK};
-                font-weight: {WEIGHT_SEMIBOLD};
-            }}
-            QPushButton#BlueControl:hover {{ background: {BLUE_DARK}; }}
-            QPushButton#BlueControl:pressed {{ background: #1f49a5; }}
             QComboBox {{
                 background: {BG};
                 border: 1px solid #b6b0a5;
@@ -392,17 +370,6 @@ class GroverGame(QWidget):
                 font-size: {TYPE_SIZE_DISPLAY}px;
                 font-weight: {WEIGHT_SEMIBOLD};
                 color: {INK};
-            }}
-            QLabel#Micro {{
-                color: {MUTED};
-                letter-spacing: 2px;
-            }}
-            QLabel#BlueBadge {{
-                background: {BLUE};
-                color: white;
-                border: 1px solid {BLUE_DARK};
-                padding: 8px;
-                font-weight: {WEIGHT_SEMIBOLD};
             }}
             QLabel#SectionTitle {{
                 font-weight: {WEIGHT_SEMIBOLD};
@@ -425,33 +392,9 @@ class GroverGame(QWidget):
 
     # ---------- UI ----------
     def _build_ui(self):
-        root = QVBoxLayout(self)
-        root.setContentsMargins(10, 10, 10, 10)
+        root = QHBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
-
-        top_bar = QFrame()
-        top_bar.setObjectName("TopBar")
-        top_layout = QHBoxLayout(top_bar)
-        top_layout.setContentsMargins(16, 12, 16, 12)
-        top_layout.setSpacing(16)
-        left_head = QLabel("QUANTUM LAB SERIES\nSearch Analyzer · Model Q-52")
-        left_head.setStyleSheet(f"color: {INK}; font-weight: {WEIGHT_SEMIBOLD};")
-        mid_head = QLabel("GROVER'S ALGORITHM — DEMONSTRATION\nSearching Queen of Hearts in 52 cards")
-        mid_head.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        mid_head.setStyleSheet(f"font-size: {TYPE_SIZE_DISPLAY}px; font-weight: {WEIGHT_SEMIBOLD};")
-        right_head = QLabel("SESSION 0427    09 MAY 2026    10:46:02")
-        right_head.setObjectName("Micro")
-        right_head.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        top_layout.addWidget(left_head, 3)
-        top_layout.addWidget(mid_head, 4)
-        top_layout.addWidget(right_head, 3)
-        root.addWidget(top_bar)
-
-        content_frame = QFrame()
-        content_frame.setObjectName("ContentFrame")
-        content_layout = QHBoxLayout(content_frame)
-        content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.setSpacing(0)
 
         left_panel = QVBoxLayout()
         left_panel.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -483,7 +426,7 @@ class GroverGame(QWidget):
 
         speed_row = QVBoxLayout()
         self.speed_label = QLabel("Classical speed: Brisk")
-        self.speed_label.setObjectName("BlueBadge")
+        self.speed_label.setStyleSheet(f"color: {MUTED};")
         self.speed_slider = QSlider(Qt.Orientation.Horizontal)
         self.speed_slider.setMinimum(1)
         self.speed_slider.setMaximum(5)
@@ -496,6 +439,9 @@ class GroverGame(QWidget):
         self.message = QLabel("Click → to begin")
         self.message.setObjectName("BlueBadge")
         self.message.setWordWrap(True)
+        self.message.setStyleSheet(
+            f"padding: 8px; background: {PANEL_DARK}; border: 1px solid #c8c1b6;"
+        )
         left_panel.addWidget(self.message)
 
         button_row = QHBoxLayout()
@@ -537,8 +483,8 @@ class GroverGame(QWidget):
         left_frame = QFrame()
         left_frame.setObjectName("LeftPanel")
         left_frame.setLayout(left_panel)
-        left_frame.setFixedWidth(600)
-        content_layout.addWidget(left_frame)
+        left_frame.setFixedWidth(340)
+        root.addWidget(left_frame)
 
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
